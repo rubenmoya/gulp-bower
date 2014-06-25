@@ -1,0 +1,14 @@
+{
+  "name": "gulp-bower",
+  "version": "0.0.1",
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt",
+    "**/*.md",
+    "node_modules",
+    "bower-components",
+    "src",
+    "gulpfile.js",
+    "*.json"
+  ]
+}
