@@ -1,7 +1,5 @@
 /*
-Author: Rubén Moya Rodríguez (@rubenmoya_)
-You need to define the dependencies in bower.json
-See the README.md for more information
+	Author: Rubén Moya Rodríguez (@rubenmoya_)
 */
 
 var gulp = require('gulp');
@@ -20,7 +18,9 @@ var bower = require('gulp-bower');
 var bowerFiles = require('gulp-bower-files');
 var bowerSrc = require('gulp-bower-src');
 var minifycss = require('gulp-minify-css');
-var rimraf = require('gulp-rimraf');
+var rimraf = require('rimraf');
+var coffee = require('gulp-coffee');
+
 
 gulp.task('connect', function(){
 	connect.server({
@@ -50,13 +50,14 @@ gulp.task('stylus', function(){
 		.pipe(connect.reload());
 });
 
-gulp.task('scripts', function(){
-	gulp.src('./src/scripts/main.js', './src/scripts/**/*.js')
-		.pipe(concat('main.js'))
-		.pipe(uglify())
-		.pipe(gulp.dest('./public/scripts/'))
-		.pipe(notify("Scripts ready."))
-		.pipe(connect.reload());
+gulp.task('coffee', function() {
+  gulp.src('./src/scripts/main.coffee', './src/scripts/**/*.coffee')
+    .pipe(coffee({bare: true}).on('error', gutil.log))
+    .pipe(concat('main.min.js'))
+    .pipe(uglify())
+    .pipe(gulp.dest('./public/scripts/'))
+    .pipe(notify("<%= file.relative %> correctly compiled with CoffeeScript."))
+	.pipe(connect.reload());
 });
 
 gulp.task('vendor-scripts', function() {
@@ -68,8 +69,7 @@ gulp.task('vendor-scripts', function() {
 		.pipe(rename({
 	        suffix: ".min"
 	    }))
-		.pipe(gulp.dest('./public/scripts/'))
-		.pipe(connect.reload());
+		.pipe(gulp.dest('./public/scripts/'));
 });
 
 gulp.task('vendor-styles', function() {
@@ -81,19 +81,19 @@ gulp.task('vendor-styles', function() {
 		.pipe(rename({
 	        suffix: ".min"
 	    }))
-		.pipe(gulp.dest('./public/css/'))
+		.pipe(gulp.dest('./public/css/'));
 });
 
-gulp.task('clean', function () {
-    gulp.src('./public/*', { read: false })
-	    .pipe(rimraf());
+gulp.task('clean', function (cb) {
+    rimraf('./public', cb);
 });
 
 gulp.task('watch', ['connect'], function(){
 	gulp.watch('./src/stylus/*.styl', ['stylus']);
 	gulp.watch('./src/*.html', ['html']);
-    gulp.watch('./src/scripts/**/*.js', ['scripts']);
+    gulp.watch('./src/scripts/**/*.coffee', ['coffee']);
 });
 
 
-gulp.task('default', ['clean', 'connect', 'html', 'stylus', 'scripts', 'vendor-scripts', 'vendor-styles', 'watch']);
+gulp.task('default', ['html', 'stylus', 'coffee', 'vendor-scripts', 'vendor-styles', 'connect', 'watch']);
+gulp.task('clean', ['clean']);
