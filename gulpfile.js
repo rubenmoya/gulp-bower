@@ -20,6 +20,7 @@ var bower = require('gulp-bower');
 var bowerFiles = require('gulp-bower-files');
 var bowerSrc = require('gulp-bower-src');
 var minifycss = require('gulp-minify-css');
+var rimraf = require('gulp-rimraf');
 
 gulp.task('connect', function(){
 	connect.server({
@@ -42,8 +43,8 @@ gulp.task('stylus', function(){
 		.pipe(stylus({use: [nib()]}))
 		.pipe(minifycss())
 		.pipe(rename({
-			suffix: ".min"
-		}))
+	        suffix: ".min"
+	    }))
 		.pipe(gulp.dest('./public/css/'))
 		.pipe(notify("<%= file.relative %> correctly compiled with Stylus."))
 		.pipe(connect.reload());
@@ -83,10 +84,16 @@ gulp.task('vendor-styles', function() {
 		.pipe(gulp.dest('./public/css/'))
 });
 
+gulp.task('clean', function () {
+    gulp.src('./public/*', { read: false })
+	    .pipe(rimraf());
+});
+
 gulp.task('watch', ['connect'], function(){
 	gulp.watch('./src/stylus/*.styl', ['stylus']);
 	gulp.watch('./src/*.html', ['html']);
     gulp.watch('./src/scripts/**/*.js', ['scripts']);
 });
 
-gulp.task('default', ['connect', 'html', 'stylus', 'scripts', 'vendor-scripts', 'vendor-styles', 'watch']);
+
+gulp.task('default', ['clean', 'connect', 'html', 'stylus', 'scripts', 'vendor-scripts', 'vendor-styles', 'watch']);

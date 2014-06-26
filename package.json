@@ -19,6 +19,7 @@
     "gulp-newer": "^0.3.0",
     "gulp-notify": "^1.4.0",
     "gulp-rename": "^1.2.0",
+    "gulp-rimraf": "^0.1.0",
     "gulp-stylus": "^1.0.2",
     "gulp-uglify": "^0.3.1",
     "gulp-util": "^2.2.17",
